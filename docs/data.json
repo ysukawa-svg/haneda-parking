@@ -1,11 +1,13 @@
 {
-  "updated_at": "2026-11-18T09:40:00+09:00",
+  "updated_at": "2026-11-18T10:02:26+09:00",
   "source": "https://tokyo-haneda.com/access/parking/index.html",
   "method": "position",
-  "warnings": [
-    "初期サンプル（Actions の初回実行で上書きされます）"
+  "warnings": [],
+  "json_endpoints_seen": [
+    "https://data.wovn.io/domain/options/n__Z4H?v=c1ad8075&host=tokyo-haneda.com",
+    "https://data.wovn.io/js_data/json/1/n__Z4H/?v=c1ad8075&u=https%3A%2F%2Ftokyo-haneda.com%2Faccess%2Fparking%2Findex.html&page_status_code=200",
+    "https://tokyo-haneda.com/app_resource/common/data/parking.json?1794963744684"
   ],
-  "json_endpoints_seen": [],
   "lots": {
     "P1": {
       "terminal": "T1",
@@ -32,7 +34,7 @@
       "capacity": 2449,
       "map": "https://goo.gl/maps/H79SwVtMrVHywj2k9",
       "reserve": "https://hnd-rsv.aeif.or.jp/airport2/app/toppage",
-      "status": "空車"
+      "status": "混雑"
     },
     "P4": {
       "terminal": "T2",
