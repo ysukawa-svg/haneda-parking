@@ -1,0 +1,9 @@
+{
+  "name": "羽田空港 駐車場チェッカー",
+  "short_name": "羽田P",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f5f7",
+  "theme_color": "#14213d",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

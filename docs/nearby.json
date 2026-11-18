@@ -1,0 +1,98 @@
+{
+  "_note": "羽田空港公式サイト『近隣駐車場のご紹介』（2026年11月確認）をもとに作成。料金・条件は変わるので利用前に各サイトで確認すること。",
+  "lots": [
+    {
+      "name": "羽田エアポートガーデン駐車場",
+      "group": "空港直結",
+      "access": "第3ターミナル直結（国内線はT3駅から京急・モノレールで1駅）",
+      "capacity": "443台（A棟288台は予約可／B棟155台）",
+      "hours": "24時間",
+      "flights": "both",
+      "fee": "1時間300円（多客期500円）・24時間最大料金なし → 長時間駐車は割高",
+      "url": "https://www.shopping-sumitomo-rd.com/haneda/parkingsite/",
+      "reserve": "https://haneda.reserve.parkingweb.jp/",
+      "tel": "050-3111-4845",
+      "map": "https://www.google.com/maps/search/?api=1&query=羽田エアポートガーデン駐車場"
+    },
+    {
+      "name": "東京流通センター P1立体駐車場",
+      "group": "駐車場＋モノレール",
+      "access": "モノレール流通センター駅まで徒歩4分 → 羽田空港まで乗換なし",
+      "capacity": "",
+      "hours": "24時間",
+      "flights": "both",
+      "fee": "akippaで予約",
+      "url": "https://www.akippa.com/parking/16081a1763fb56e6eefa5477840c4736",
+      "reserve": "https://www.akippa.com/parking/16081a1763fb56e6eefa5477840c4736",
+      "tel": "",
+      "map": "https://www.google.com/maps/search/?api=1&query=東京流通センター+P1立体駐車場"
+    },
+    {
+      "name": "東京シティエアターミナル（TCAT）駐車場",
+      "group": "駐車場＋バス",
+      "access": "日本橋箱崎 → リムジンバス約25分",
+      "capacity": "403台",
+      "hours": "24時間",
+      "flights": "both",
+      "fee": "1日最大 月〜土2,900円／日祝1,900円、バス&エアー7日間プランあり（要予約）",
+      "url": "https://www.tcat-hakozaki.co.jp/parking-others/",
+      "live": "https://search.ipos-land.jp/p/detail.aspx?id=P1300160Z",
+      "tel": "03-3665-7130",
+      "map": "https://www.google.com/maps/search/?api=1&query=東京シティエアターミナル駐車場"
+    },
+    {
+      "name": "スカイビル駐車場（YCAT・横浜）",
+      "group": "駐車場＋バス",
+      "access": "横浜駅東口 → 空港バス",
+      "capacity": "396台",
+      "hours": "24時間",
+      "flights": "both",
+      "fee": "らくらく空港プラン／akippa あり",
+      "url": "https://www.yokohama-sky.co.jp/information/1356",
+      "reserve": "https://www.akippa.com/parking/1c25f8f5c30dae50d5f492d0d91ef743",
+      "tel": "045-441-1888",
+      "map": "https://www.google.com/maps/search/?api=1&query=横浜スカイビル駐車場"
+    },
+    {
+      "name": "エイトパーキング",
+      "group": "民間（送迎あり）",
+      "access": "川崎市浮島町 → 空港まで送迎",
+      "capacity": "",
+      "hours": "4:30〜23:30",
+      "flights": "domestic",
+      "fee": "国内線利用者のみ",
+      "url": "https://www.8parking.com/",
+      "tel": "044-270-4189",
+      "map": "https://www.google.com/maps/search/?api=1&query=エイトパーキング+浮島町"
+    },
+    {
+      "name": "にこにこパーキング",
+      "group": "民間（送迎あり）",
+      "access": "川崎市浮島町 → 空港まで送迎",
+      "capacity": "",
+      "hours": "4:30〜23:30",
+      "flights": "domestic",
+      "fee": "国内線利用者のみ",
+      "url": "https://www.nikonikop.com/",
+      "tel": "044-276-0092",
+      "map": "https://www.google.com/maps/search/?api=1&query=にこにこパーキング+浮島町"
+    },
+    {
+      "name": "つばさパーキング",
+      "group": "民間（送迎あり）",
+      "access": "大田区京浜島 → 空港まで送迎",
+      "capacity": "",
+      "hours": "7:00〜23:30",
+      "flights": "domestic",
+      "fee": "国内線のみ・ネット予約必須・キャッシュレスのみ",
+      "url": "https://www.tsubasa-p.jp/",
+      "tel": "",
+      "map": "https://www.google.com/maps/search/?api=1&query=つばさパーキング+京浜島"
+    }
+  ],
+  "search": [
+    {"name": "s-park（都内の時間貸し駐車場・満空表示）", "url": "https://www.s-park.jp/"},
+    {"name": "タイムズ（大田区の駐車場・満空表示）", "url": "https://times-info.net/P13-tokyo/C111/"},
+    {"name": "akippa（羽田空港周辺の予約駐車場）", "url": "https://www.akippa.com/kanto/tokyo/hanedaairport"}
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "updated_at": "2026-11-18T09:40:00+09:00",
+  "source": "https://tokyo-haneda.com/access/parking/index.html",
+  "method": "position",
+  "warnings": [
+    "初期サンプル（Actions の初回実行で上書きされます）"
+  ],
+  "json_endpoints_seen": [],
+  "lots": {
+    "P1": {
+      "terminal": "T1",
+      "label": "第1ターミナル",
+      "kind": "国内線",
+      "capacity": 2351,
+      "map": "https://goo.gl/maps/k2QZcz9SF7FT7joK8",
+      "reserve": null,
+      "status": "混雑"
+    },
+    "P2": {
+      "terminal": "T1",
+      "label": "第1ターミナル",
+      "kind": "国内線",
+      "capacity": 2315,
+      "map": "https://goo.gl/maps/xY1oV6vBzgLGnSs78",
+      "reserve": "https://hnd-rsv.aeif.or.jp/airport2/app/toppage",
+      "status": "空車"
+    },
+    "P3": {
+      "terminal": "T2",
+      "label": "第2ターミナル",
+      "kind": "国内線",
+      "capacity": 2449,
+      "map": "https://goo.gl/maps/H79SwVtMrVHywj2k9",
+      "reserve": "https://hnd-rsv.aeif.or.jp/airport2/app/toppage",
+      "status": "空車"
+    },
+    "P4": {
+      "terminal": "T2",
+      "label": "第2ターミナル",
+      "kind": "国内線",
+      "capacity": 3087,
+      "map": "https://goo.gl/maps/a9qE5ywJTgk3XmRe6",
+      "reserve": "https://haneda-p4.jp/airport/entrance/0000.jsf",
+      "status": "空車"
+    },
+    "P5": {
+      "terminal": "T3",
+      "label": "第3ターミナル",
+      "kind": "国際線",
+      "capacity": 2910,
+      "map": "https://goo.gl/maps/aw7RLP4Rtc4KQcSc9",
+      "reserve": "https://pk-reserve.haneda-airport.jp/airport/entrance/0000.jsf",
+      "status": "空車"
+    }
+  },
+  "ok": true
+}

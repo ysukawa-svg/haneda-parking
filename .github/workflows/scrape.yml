@@ -1,0 +1,48 @@
+name: 羽田駐車場の混雑状況を取得
+
+on:
+  schedule:
+    # 日本時間 5:00〜23:50 の間、10分ごと（cron は UTC 表記）
+    - cron: "*/10 20-23,0-14 * * *"
+  workflow_dispatch: {}   # Actions 画面から手動実行も可能
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 依存関係
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: 取得
+        run: python scraper/scrape.py
+
+      - name: 結果をコミット（取得失敗時も前回値＋エラーを記録）
+        if: always()
+        run: |
+          git config user.name  "parking-bot"
+          git config user.email "parking-bot@users.noreply.github.com"
+          git add docs/data.json docs/history.json
+          if git diff --cached --quiet; then
+            echo "変更なし"
+          else
+            git commit -m "update parking status $(TZ=Asia/Tokyo date '+%m/%d %H:%M')"
+            git pull --rebase --autostash
+            git push
+          fi

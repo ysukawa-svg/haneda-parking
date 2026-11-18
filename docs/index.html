@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>羽田 駐車場チェッカー</title>
+<meta name="theme-color" content="#14213d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #fff; --ink: #1b1f27; --muted: #6b7280; --line: #e5e7eb;
+    --navy: #14213d; --accent: #1d4ed8;
+    --ok: #15803d; --ok-bg: #e8f5ec;
+    --busy: #8a6100; --busy-bg: #fff4cc; --busy-dot: #f5c400;
+    --full: #b42318; --full-bg: #fde8e4; --full-dot: #ef5a2a;
+    --err: #4b5563; --err-bg: #eceef1;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+         background: var(--bg); color: var(--ink); line-height: 1.5; -webkit-text-size-adjust: 100%; }
+  header { background: var(--navy); color: #fff; padding: calc(14px + env(safe-area-inset-top)) 16px 14px; }
+  header h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: .02em; }
+  header .sub { font-size: 12px; opacity: .8; margin-top: 2px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  header button { background: rgba(255,255,255,.14); color: #fff; border: 0; border-radius: 999px;
+                  padding: 4px 10px; font-size: 12px; cursor: pointer; }
+  main { max-width: 640px; margin: 0 auto; padding: 12px 12px 40px; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #e3e6ec; padding: 4px; border-radius: 12px; }
+  .seg button { border: 0; background: transparent; padding: 8px 4px; border-radius: 9px; font-size: 14px; font-weight: 600;
+                color: var(--muted); cursor: pointer; line-height: 1.25; }
+  .seg button small { display: block; font-size: 10.5px; font-weight: 500; }
+  .seg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .card { background: var(--card); border-radius: 14px; padding: 14px; margin-top: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  .card h2 { font-size: 13px; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  .verdict { font-size: 17px; font-weight: 700; margin: 0 0 4px; }
+  .verdict-note { font-size: 13px; color: var(--muted); margin: 0; }
+  .lots { display: grid; gap: 8px; }
+  .lot { display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 10px;
+         padding: 10px; border-radius: 10px; border: 1px solid var(--line); }
+  .lot .p { font-weight: 800; font-size: 20px; text-align: center; color: var(--navy); }
+  .lot .meta { font-size: 12px; color: var(--muted); }
+  .lot .links a { font-size: 12px; margin-right: 10px; color: var(--accent); text-decoration: none; }
+  .chip { font-size: 14px; font-weight: 700; padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+  .s-空車 { color: var(--ok); background: var(--ok-bg); }
+  .s-混雑 { color: var(--busy); background: var(--busy-bg); }
+  .s-満車 { color: var(--full); background: var(--full-bg); }
+  .s-エラー, .s-不明 { color: var(--err); background: var(--err-bg); }
+  .banner { border-radius: 12px; padding: 10px 12px; font-size: 13px; margin-top: 12px; }
+  .banner.warn { background: #fff4cc; color: #6b4e00; }
+  .banner.bad { background: var(--full-bg); color: var(--full); }
+  .alt h3 { font-size: 15px; margin: 14px 0 6px; }
+  .alt h3:first-child { margin-top: 0; }
+  .nb { border-top: 1px solid var(--line); padding: 10px 0; }
+  .nb:first-of-type { border-top: 0; }
+  .nb .name { font-weight: 700; font-size: 15px; }
+  .nb .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 0 6px; margin-left: 6px; }
+  .nb .d { font-size: 13px; color: #374151; }
+  .nb .acts { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .nb .acts a { font-size: 12.5px; text-decoration: none; color: var(--accent); background: #eef2ff; padding: 4px 10px; border-radius: 999px; }
+  .nb .acts a.live { background: #e8f5ec; color: var(--ok); font-weight: 700; }
+  details summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+  .hist { display: grid; grid-template-columns: 28px 1fr; gap: 4px 8px; align-items: center; font-size: 12px; margin-top: 8px; }
+  .strip { display: flex; height: 14px; border-radius: 4px; overflow: hidden; background: var(--err-bg); }
+  .strip i { flex: 1; }
+  .c-空車 { background: #9fd7b0; } .c-混雑 { background: var(--busy-dot); } .c-満車 { background: var(--full-dot); } .c-エラー { background: #c7cbd1; }
+  .axis { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--muted); grid-column: 2; }
+  footer { font-size: 11.5px; color: var(--muted); margin-top: 18px; line-height: 1.6; }
+  footer a { color: var(--muted); }
+  .muted { color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>羽田空港 駐車場チェッカー</h1>
+  <div class="sub"><span id="updated">読み込み中…</span><button id="reload" type="button">再読込</button></div>
+</header>
+<main>
+  <div class="seg" role="group" aria-label="利用するターミナル">
+    <button type="button" data-t="T1">第1<small>JAL・スカイマーク等</small></button>
+    <button type="button" data-t="T2">第2<small>ANA・AIRDO等</small></button>
+    <button type="button" data-t="T3">第3<small>国際線</small></button>
+  </div>
+
+  <div id="banner"></div>
+
+  <section class="card" id="mine">
+    <h2 id="mine-title">あなたのターミナル</h2>
+    <p class="verdict" id="verdict">—</p>
+    <p class="verdict-note" id="verdict-note"></p>
+    <div class="lots" id="mine-lots" style="margin-top:10px"></div>
+  </section>
+
+  <section class="card alt" id="alt" hidden></section>
+
+  <section class="card">
+    <h2>全駐車場</h2>
+    <div class="lots" id="all-lots"></div>
+    <div id="hist-wrap"></div>
+  </section>
+
+  <section class="card">
+    <details id="nearby-all">
+      <summary>周辺駐車場・検索サイト（いつでも見られる一覧）</summary>
+      <div id="nearby-list" style="margin-top:8px"></div>
+    </details>
+  </section>
+
+  <footer>
+    データ元: <a href="https://tokyo-haneda.com/access/parking/index.html" target="_blank" rel="noopener">羽田空港旅客ターミナル公式「駐車場（混雑情報）」</a>
+    を10分おきに自動取得（公式は3分毎更新）。表示が遅れることがあるので、出発直前は公式ページも確認してください。
+    周辺駐車場の満空は自動取得していません（各リンク先で確認）。
+  </footer>
+</main>
+
+<script>
+(() => {
+  const TERMINALS = {
+    T1: { name: "第1ターミナル", lots: ["P1", "P2"], kind: "国内線" },
+    T2: { name: "第2ターミナル", lots: ["P3", "P4"], kind: "国内線" },
+    T3: { name: "第3ターミナル", lots: ["P5"], kind: "国際線" },
+  };
+  const OFFICIAL = "https://tokyo-haneda.com/access/parking/index.html";
+  const STALE_MIN = 25;
+  const RANK = { "空車": 0, "混雑": 1, "満車": 2, "エラー": 3, "不明": 3 };
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  let data = null, nearby = null, history = [];
+  let term = "T1";
+  try { term = localStorage.getItem("terminal") || "T1"; } catch (e) {}
+  if (!TERMINALS[term]) term = "T1";
+
+  async function getJSON(name) {
+    const r = await fetch(`${name}?t=${Date.now()}`, { cache: "no-store" });
+    if (!r.ok) throw new Error(`${name}: ${r.status}`);
+    return r.json();
+  }
+
+  async function load() {
+    $("updated").textContent = "更新中…";
+    try {
+      const [d, n, h] = await Promise.all([
+        getJSON("data.json"), nearby ? Promise.resolve(nearby) : getJSON("nearby.json"),
+        getJSON("history.json").catch(() => []),
+      ]);
+      data = d; nearby = n; history = Array.isArray(h) ? h : [];
+    } catch (e) {
+      $("updated").textContent = "データを読み込めませんでした";
+      $("banner").innerHTML = `<div class="banner bad">データ取得に失敗しました（${esc(e.message)}）。<a href="${OFFICIAL}" target="_blank" rel="noopener">公式ページ</a>で確認してください。</div>`;
+      return;
+    }
+    render();
+  }
+
+  const status = (p) => (data?.lots?.[p]?.status) || "不明";
+  const usable = (s) => s === "空車";
+  const chip = (s) => `<span class="chip s-${esc(s)}">${esc(s)}</span>`;
+
+  function minutesAgo(iso) {
+    const t = Date.parse(iso);
+    return isNaN(t) ? null : Math.round((Date.now() - t) / 60000);
+  }
+
+  function lotRow(p, extra = "") {
+    const l = data.lots[p] || {};
+    const links = [
+      l.map ? `<a href="${esc(l.map)}" target="_blank" rel="noopener">地図</a>` : "",
+      l.reserve ? `<a href="${esc(l.reserve)}" target="_blank" rel="noopener">予約</a>` : "",
+    ].join("");
+    return `<div class="lot"><div class="p">${p}</div>
+      <div><div>${esc(l.label || "")}${extra}</div>
+        <div class="meta">${l.capacity ? l.capacity.toLocaleString() + "台" : ""}${p === "P1" ? "・予約不可" : ""}</div>
+        <div class="links">${links}</div></div>
+      ${chip(status(p))}</div>`;
+  }
+
+  function render() {
+    // ヘッダー
+    const ago = minutesAgo(data.updated_at);
+    const hhmm = data.updated_at ? new Date(data.updated_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }) : "—";
+    $("updated").textContent = `公式データ ${hhmm} 取得（${ago ?? "?"}分前）`;
+
+    const banners = [];
+    if (data.ok === false) banners.push(`<div class="banner bad">直近の自動取得に失敗しています（${esc(data.failed_at || "")}）。下の表示は前回取得分です。<a href="${OFFICIAL}" target="_blank" rel="noopener">公式ページで確認</a></div>`);
+    else if (ago !== null && ago > STALE_MIN) banners.push(`<div class="banner warn">${ago}分前のデータです（夜間停止中か、自動取得が遅れています）。<a href="${OFFICIAL}" target="_blank" rel="noopener">公式ページで確認</a></div>`);
+    if (data.warnings?.length) banners.push(`<div class="banner warn">取得時の注意: ${esc(data.warnings.join(" / "))}</div>`);
+    $("banner").innerHTML = banners.join("");
+
+    // ターミナル選択
+    document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t === term)));
+
+    // 自分のターミナル
+    const T = TERMINALS[term];
+    $("mine-title").textContent = `${T.name}（${T.kind}）`;
+    const mine = T.lots.map(p => ({ p, s: status(p) })).sort((a, b) => RANK[a.s] - RANK[b.s]);
+    const best = mine[0];
+    let verdict, note = "";
+    if (usable(best.s)) {
+      verdict = `${best.p} が空車です`;
+      const others = mine.slice(1).filter(m => !usable(m.s));
+      if (others.length) note = `${others.map(m => `${m.p}は${m.s}`).join("、")}なので ${best.p} へ。`;
+    } else if (best.s === "混雑") {
+      verdict = `${T.lots.join("・")} は混雑中`;
+      note = "入庫待ちの可能性あり。下の代替案も検討してください。";
+    } else if (best.s === "満車") {
+      verdict = `${T.lots.join("・")} は満車`;
+      note = "待ち時間が発生しています。下の代替案を確認してください。";
+    } else {
+      verdict = "状態を取得できていません";
+      note = "公式ページで確認してください。";
+    }
+    $("verdict").textContent = verdict;
+    $("verdict-note").textContent = note;
+    $("mine-lots").innerHTML = T.lots.map(p => lotRow(p)).join("");
+
+    // 代替案（自ターミナルに空車がないとき）
+    const alt = $("alt");
+    if (!usable(best.s)) {
+      alt.hidden = false;
+      const otherLots = Object.keys(data.lots).filter(p => !T.lots.includes(p) && usable(status(p)));
+      let html = "";
+      if (otherLots.length) {
+        html += `<h3>① 空港内の別の駐車場（空車）</h3>
+          <p class="verdict-note">ターミナル間は無料連絡バス（または京急・モノレール）で移動できます。</p>
+          <div class="lots" style="margin-top:8px">${otherLots.map(p => lotRow(p)).join("")}</div>`;
+      } else {
+        html += `<h3>① 空港内の駐車場</h3><p class="verdict-note">P1〜P5 に空車表示はありません。</p>`;
+      }
+      html += `<h3>② 周辺の駐車場</h3>` + nearbyHTML(T.kind === "国内線" ? "domestic" : "international");
+      alt.innerHTML = html;
+    } else {
+      alt.hidden = true;
+      alt.innerHTML = "";
+    }
+
+    // 全駐車場
+    $("all-lots").innerHTML = Object.keys(data.lots).map(p => lotRow(p)).join("");
+    renderHistory();
+
+    // 周辺一覧（常設）
+    $("nearby-list").innerHTML = nearbyHTML("all");
+  }
+
+  function nearbyHTML(mode) {
+    if (!nearby) return "";
+    const list = nearby.lots.filter(l => mode === "all" || mode === "domestic" || l.flights !== "domestic");
+    const items = list.map(l => {
+      const acts = [
+        l.live ? `<a class="live" href="${esc(l.live)}" target="_blank" rel="noopener">満空を見る</a>` : "",
+        l.reserve ? `<a href="${esc(l.reserve)}" target="_blank" rel="noopener">予約</a>` : "",
+        l.url && l.url !== l.reserve ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">公式サイト</a>` : "",
+        l.map ? `<a href="${esc(l.map)}" target="_blank" rel="noopener">地図</a>` : "",
+        l.tel ? `<a href="tel:${esc(l.tel)}">電話</a>` : "",
+      ].join("");
+      return `<div class="nb"><div><span class="name">${esc(l.name)}</span><span class="tag">${esc(l.group)}</span>
+          ${l.flights === "domestic" ? '<span class="tag">国内線のみ</span>' : ""}</div>
+        <div class="d">${esc(l.access)}${l.hours ? `・${esc(l.hours)}` : ""}${l.capacity ? `・${esc(l.capacity)}` : ""}</div>
+        ${l.fee ? `<div class="d muted">${esc(l.fee)}</div>` : ""}
+        <div class="acts">${acts}</div></div>`;
+    }).join("");
+    const search = nearby.search.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a>`).join("");
+    return items + `<div class="nb"><div class="name">満空検索サイト</div><div class="acts">${search}</div></div>`;
+  }
+
+  function renderHistory() {
+    const wrap = $("hist-wrap");
+    const since = Date.now() - 24 * 3600 * 1000;
+    const rows = history.filter(h => Date.parse(h.t) >= since);
+    if (rows.length < 3) { wrap.innerHTML = ""; return; }
+    const first = new Date(rows[0].t), last = new Date(rows[rows.length - 1].t);
+    const fmt = (d) => d.toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    wrap.innerHTML = `<h2 style="margin-top:14px">直近24時間の推移</h2><div class="hist">` +
+      Object.keys(data.lots).map(p =>
+        `<div>${p}</div><div class="strip">${rows.map(r => `<i class="c-${esc(r[p] || "エラー")}" title="${esc(r.t)} ${esc(r[p])}"></i>`).join("")}</div>`
+      ).join("") + `<div class="axis"><span>${fmt(first)}</span><span>${fmt(last)}</span></div></div>`;
+  }
+
+  document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+    term = b.dataset.t;
+    try { localStorage.setItem("terminal", term); } catch (e) {}
+    if (data) render();
+  }));
+  $("reload").addEventListener("click", load);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+  setInterval(load, 60 * 1000);
+  load();
+})();
+</script>
+</body>
+</html>
