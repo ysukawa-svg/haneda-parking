@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-11-21T21:02:43+09:00",
+  "updated_at": "2026-11-21T22:00:00+09:00",
   "source": "https://tokyo-haneda.com/access/parking/index.html",
   "method": "position",
   "warnings": [],
   "json_endpoints_seen": [
     "https://data.wovn.io/domain/options/n__Z4H?v=c1ad8075&host=tokyo-haneda.com",
     "https://data.wovn.io/js_data/json/1/n__Z4H/?v=c1ad8075&u=https%3A%2F%2Ftokyo-haneda.com%2Faccess%2Fparking%2Findex.html&page_status_code=200",
-    "https://tokyo-haneda.com/app_resource/common/data/parking.json?1795262561930"
+    "https://tokyo-haneda.com/app_resource/common/data/parking.json?1795265998843"
   ],
   "lots": {
     "P1": {
